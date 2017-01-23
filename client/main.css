@@ -1,0 +1,44 @@
+/* CSS declarations go here */
+body {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0px;
+  overflow: hidden;
+}
+
+.info {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.9);
+  box-shadow: 2px 2px 0px 2px rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  position: absolute;
+  margin: 10px 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  line-height: 1.0;
+}
+
+a {
+  color: #b2ffe1;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #00ffb2;
+  transition: color 0.2s linear 0s;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+h3 {
+  font-size: 14px;
+  font-weight: 400;
+}

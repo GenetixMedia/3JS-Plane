@@ -1,0 +1,183 @@
+
+	<head>
+		<title>3JS Plane</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,700i,800|Roboto" rel="stylesheet">
+
+	</head>
+
+	<body>
+
+		<div class="info">
+			<div class="info-content">
+				<h1>Three.js Plane Demo</h1>
+				<h2>Developer: <a href="https://www.facebook.com/nathanjeanshow/?ref=bookmarks">Nathan Jean</a></h2>
+				<h3>All Rights Reserved, <a href="https://genetix.media/">Genetix Media</a> LLC, 2017</h3>
+			</div>
+		</div>
+
+		<script src="js/OrbitControls.js"></script>
+		<script src="js/Detector.js"></script>
+    <script src="js/Projector.js"></script>
+
+		<script>
+			var container;
+			var controls;
+			var camera, scene, renderer;
+      var bkgScene;
+      var materials;
+      var geometry;
+      var planeGeometry, planeMaterial, planeMesh;
+			var planeGeometry2, planeMaterial2, planeMesh2;
+			var promise;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+      var raycaster = new THREE.Raycaster();
+      var mouse = new THREE.Vector2();
+      var CamHomePosition;
+
+      var objects = new Array();
+      var uniqueObject;
+
+			init();
+			animate();
+      introTween();
+			function init() {
+				createContainer();
+        createRenderer();
+				createScene();
+        createPlane();
+        createBackgroundScene();
+				createBackground();
+				createCamera();
+				createControls();
+				createLights();
+
+			}
+
+			function createContainer() {
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+			}
+
+      function createRenderer() {
+        renderer = new THREE.WebGLRenderer({ antialias: false, alpha:true });
+        renderer.setClearColor(0xffffff);
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        renderer.sortObjects = false;
+        renderer.autoClear = false;
+        container.appendChild( renderer.domElement );
+      }
+
+			function createScene() {
+				scene = new THREE.Scene();
+			}
+
+      function createBackgroundScene() {
+        bkgScene = new THREE.Scene();
+        //bkgScene.fog = new THREE.FogExp2( 0xfff6e2, 0.003 );
+      }
+
+			function createBackground() {
+      var BackgroundGeometry = new THREE.SphereGeometry( 250, 60, 40 );
+			BackgroundGeometry.scale( 1, 1, 1 );
+				var BackgroundMaterial = new THREE.MeshBasicMaterial( {
+					map: new THREE.TextureLoader().load( 'earth.jpg' ),
+
+				} );
+
+      var  BackgroundMesh = new THREE.Mesh( BackgroundGeometry, BackgroundMaterial );
+  				bkgScene.add( BackgroundMesh );
+
+    	}
+
+			function createCamera() {
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.z = 2000;
+			}
+
+			function createControls() {
+				controls = new THREE.OrbitControls(camera, renderer.domElement);
+				controls.enableDamping = true;
+				controls.dampingFactor = 0.25;
+				controls.enableZoom = true;
+        //controls.minDistance = 10;
+        //controls.maxDistance = 50;
+			}
+
+			function createLights() {
+				var ambient = new THREE.AmbientLight(0x666699);
+				var hemi = new THREE.HemisphereLight(0x224466);
+				var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 50%, 100%)'));
+				keyLight.position.set(100, 100, 0);
+
+				scene.add( ambient, hemi, keyLight );
+			}
+
+      function createPlane() {
+        planeGeometry = new THREE.SphereGeometry(10, 32, 32);
+        planeMaterial = new THREE.MeshNormalMaterial({
+          wireframe: true,
+        });
+        planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+        planeMesh.position.y = 280;
+
+        scene.add(planeMesh);
+      }
+
+      function introTween() {
+        //  Zoom In Tween
+        var ZoomIn = {x: 0, y: 0, z: 1000};
+        var ZoomInTween = new TWEEN.Tween(camera.position)
+          .to(ZoomIn, 2000)
+          .delay(1000)
+          .onUpdate(function(){
+
+          })
+          .onComplete(function() {
+            camera.position.z = ZoomIn.z;
+          })
+          .easing(TWEEN.Easing.Quartic.InOut)
+          .start()
+      }
+
+			function onWindowResize() {
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			function onDocumentMouseMove( event ) {
+        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			}
+
+			function animate() {
+				requestAnimationFrame(animate);
+        bkgScene.rotation.y += 0.0003;
+        scene.rotation.x -= 0.01;
+				scene.rotation.y -= 0.01;
+				render();
+			}
+
+			function render() {
+
+        renderer.render( bkgScene, camera );
+				renderer.render( scene, camera );
+
+        TWEEN.update();
+        controls.update();
+			}
+
+      document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			window.addEventListener( 'resize', onWindowResize, false );
+
+		</script>
+
+	</body>
